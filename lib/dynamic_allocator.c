@@ -64,10 +64,15 @@ void initialize_MemBlocksList(uint32 numOfBlocks)
 	// Write your code here, remove the panic and write your code
 	//panic("initialize_MemBlocksList() is not implemented yet...!!");
 	LIST_INIT(&AvailableMemBlocksList);
+	LIST_INSERT_HEAD(&AvailableMemBlocksList, &MemBlockNodes[0]);
+	//struct MemBlock firstAv = LIST_FIRST(&AvailableMemBlocksList);
 	int i;
-	for (i = 0; i < numOfBlocks; i++) {
+	for (i = 1; i < numOfBlocks; i++) {
 
-		AvailableMemBlocksList.lh_first = MemBlockNodes[0].prev_next_info.le_prev;
+		MemBlockNodes[i].size = 0;
+		MemBlockNodes[i].sva = 0;
+		LIST_INSERT_TAIL(&AvailableMemBlocksList, &MemBlockNodes[i]);
+
 	}
 
 }
