@@ -65,12 +65,9 @@ void initialize_MemBlocksList(uint32 numOfBlocks)
 	//panic("initialize_MemBlocksList() is not implemented yet...!!");
 	LIST_INIT(&AvailableMemBlocksList);
 	int i;
-	*AvailableMemBlocksList.lh_first->prev_next_info.le_next = MemBlockNodes[0];
+	for (i = 0; i < numOfBlocks; i++) {
 
-	for (i = 0; i < numOfBlocks - 1; i++) {
-		*MemBlockNodes[i].prev_next_info.le_next = MemBlockNodes[i + 1];
-		*MemBlockNodes[i + 1].prev_next_info.le_prev = MemBlockNodes[i];
-		AvailableMemBlocksList.size++;
+		AvailableMemBlocksList.lh_first = MemBlockNodes[0].prev_next_info.le_prev;
 	}
 
 }
