@@ -149,6 +149,18 @@ void insert_sorted_with_merge_freeList(struct MemBlock *blockToInsert)
 		struct MemBlock *freeBlock;
 
 		LIST_FOREACH(freeBlock, &FreeMemBlocksList) {
+			if(freeBlock->sva + freeBlock->size == blockToInsert->sva) {
+				// merge after
+			}
+			else if(blockToInsert->sva + blockToInsert->size == freeBlock->sva) {
+				// merge before
+			}
+			else if(
+					freeBlock->sva + freeBlock->size == blockToInsert->sva &&
+					blockToInsert->size + blockToInsert->sva == freeBlock->prev_next_info.le_next->sva
+			) {
+				// merge between
+			}
 			cprintf("SVA: %d", freeBlock->sva);
 		}
 	}
