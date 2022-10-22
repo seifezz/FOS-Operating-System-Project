@@ -643,7 +643,7 @@ void test_insert_sorted_with_merge_freeList()
 
 	//Check 1: Check size of the AllocMemBlocksList
 	if (LIST_SIZE(&(AllocMemBlocksList)) != 0 || LIST_SIZE(&(AvailableMemBlocksList)) != numOfBlocks || LIST_SIZE(&(FreeMemBlocksList)) != 2)
-		panic("insert_sorted_with_merge: Wrong sizes for AvailableMemBlocksList, FreeMemBlocksList and AllocMemBlocksList.");
+		panic("insert_sorted_with_merge: Wrong sizes for AvailableMemBlocksList, FreeMemBlocksList and AllocMemBlocksList. %d", LIST_SIZE(&(FreeMemBlocksList)));
 
 	//Check 2: Check the FreeMemBlocksList content
 	size = 0;
@@ -665,14 +665,14 @@ void test_insert_sorted_with_merge_freeList()
 
 	//Check 1: Check size of the AllocMemBlocksList
 	if (LIST_SIZE(&(AllocMemBlocksList)) != 0 || LIST_SIZE(&(AvailableMemBlocksList)) != numOfBlocks || LIST_SIZE(&(FreeMemBlocksList)) != 3)
-		panic("insert_sorted_with_merge: Wrong sizes for AvailableMemBlocksList, FreeMemBlocksList and AllocMemBlocksList.");
+		panic("insert_sorted_with_merge 3_1: Wrong sizes for AvailableMemBlocksList, FreeMemBlocksList and AllocMemBlocksList. %d", LIST_SIZE(&(FreeMemBlocksList)));
 
 	//Check 2: Check the FreeMemBlocksList content
 	size = 0;
 	actualSize = 3;
 	chk = check_list_data(&FreeMemBlocksList, blocksToInsertSVAs, blocksToInsertSizes, &size, actualSize);
-	if(chk != 1) panic("insert_sorted_with_merge: WRONG INSERT .. FreeMemBlocksList content is not correct.");
-	if(size != actualSize) panic("insert_sorted_with_merge: WRONG INSERT .. FreeMemBlocksList size is not correct.");
+	if(chk != 1) panic("insert_sorted_with_merge 3_2: WRONG INSERT .. FreeMemBlocksList content is not correct.");
+	if(size != actualSize) panic("insert_sorted_with_merge 3_3: WRONG INSERT .. FreeMemBlocksList size is not correct.");
 
 	//====================================================================//
 	/*INSERT_SORTED_WITH MERGE Scenario 4: CASE 1 - Insert with NO MERGE in the FreeMemBlocksList (between 2 blocks)*/
@@ -687,14 +687,14 @@ void test_insert_sorted_with_merge_freeList()
 
 	//Check 1: Check size of the AllocMemBlocksList
 	if (LIST_SIZE(&(AllocMemBlocksList)) != 0 || LIST_SIZE(&(AvailableMemBlocksList)) != numOfBlocks || LIST_SIZE(&(FreeMemBlocksList)) != 4)
-		panic("insert_sorted_with_merge: Wrong sizes for AvailableMemBlocksList, FreeMemBlocksList and AllocMemBlocksList.");
+		panic("insert_sorted_with_merge 4_1: Wrong sizes for AvailableMemBlocksList, FreeMemBlocksList and AllocMemBlocksList.");
 
 	//Check 2: Check the FreeMemBlocksList content
 	size = 0;
 	actualSize = 4;
 	chk = check_list_data(&FreeMemBlocksList, blocksToInsertSVAs, blocksToInsertSizes, &size, actualSize);
-	if(chk != 1) panic("insert_sorted_with_merge: WRONG INSERT .. FreeMemBlocksList content is not correct.");
-	if(size != actualSize) panic("insert_sorted_with_merge: WRONG INSERT .. FreeMemBlocksList size is not correct.");
+	if(chk != 1) panic("insert_sorted_with_merge 4_2: WRONG INSERT .. FreeMemBlocksList content is not correct.");
+	if(size != actualSize) panic("insert_sorted_with_merge 4_3: WRONG INSERT .. FreeMemBlocksList size is not correct.");
 
 	//====================================================================//
 	/*INSERT_SORTED_WITH MERGE Scenario 5: CASE 2 - Merge with previous ONLY in the FreeMemBlocksList (AT the tail)*/
@@ -817,7 +817,7 @@ void test_insert_sorted_with_merge_freeList()
 
 	//Check 1: Check size of the AllocMemBlocksList
 	if (LIST_SIZE(&(AllocMemBlocksList)) != 0 || LIST_SIZE(&(AvailableMemBlocksList)) != numOfBlocks + 4 || LIST_SIZE(&(FreeMemBlocksList)) != 4)
-		panic("insert_sorted_with_merge: Wrong sizes for AvailableMemBlocksList, FreeMemBlocksList and AllocMemBlocksList.");
+		panic("insert_sorted_with_merge: Wrong sizes for AvailableMemBlocksList, FreeMemBlocksList and AllocMemBlocksList. %d", LIST_SIZE(&(FreeMemBlocksList)));
 
 	//Check 2: Check the FreeMemBlocksList content
 	size = 0;
@@ -846,14 +846,14 @@ void test_insert_sorted_with_merge_freeList()
 	blockToInsert9.size = blocksToInsertSizes[idx_blocksToInsert];
 
 	//printf("===>BEFORE\n");
-	//show_list_content(&FreeMemBlocksList);
+	show_list_content(&FreeMemBlocksList);
 
 	insert_sorted_with_merge_freeList(&blockToInsert9);
 	//show_list_content(&FreeMemBlocksList);
 
 	//Check 1: Check size of the AllocMemBlocksList
 	if (LIST_SIZE(&(AllocMemBlocksList)) != 0 || LIST_SIZE(&(AvailableMemBlocksList)) != numOfBlocks + 6 || LIST_SIZE(&(FreeMemBlocksList)) != 3)
-		panic("insert_sorted_with_merge: Wrong sizes for AvailableMemBlocksList, FreeMemBlocksList and AllocMemBlocksList.");
+		panic("insert_sorted_with_merge: Wrong sizes for AvailableMemBlocksList, FreeMemBlocksList and AllocMemBlocksList. %d", LIST_SIZE(&(FreeMemBlocksList)));
 
 	//Check 2: Check the FreeMemBlocksList content
 	size = 0;
@@ -865,7 +865,9 @@ void test_insert_sorted_with_merge_freeList()
 	blocksToInsertSVAs[idx_blocksToInsert+1] = 0x0;
 	blocksToInsertSizes[idx_blocksToInsert+1] = 0;
 	chk = check_list_data(&FreeMemBlocksList, blocksToInsertSVAs, blocksToInsertSizes, &size, actualSize);
+	show_list_content(&FreeMemBlocksList);
 	if(chk != 1) panic("insert_sorted_with_merge: WRONG INSERT .. FreeMemBlocksList content is not correct.");
+	cprintf("%x %d \n", size, actualSize);
 	if(size != actualSize) panic("insert_sorted_with_merge: WRONG INSERT .. FreeMemBlocksList size is not correct.");
 
 	//Check 3: Check the AvailableMemBlocksList content
@@ -891,6 +893,10 @@ int check_list_data(struct MemBlock_List* list, uint32* blocksSVAs, uint32* bloc
 	{
 		while(blocksSizes[i] == 0) //Empty entry in the given ground truth array .. skip it
 			i++;
+
+		cprintf("i = %d .. \n", i);
+		cprintf("Node data: sva = %x, size = %d\n", node->sva, node->size);
+		cprintf("blocks[i] data: sva = %x, size = %d\n", blocksSVAs[(i)], blocksSizes[i]);
 		if(node->sva != blocksSVAs[(i)] || node->size != blocksSizes[i])
 		{
 //			cprintf("i = %d .. \n", i);
