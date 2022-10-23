@@ -255,7 +255,7 @@ void test_alloc_block_FF()
 	//Check size of AvailableMemBlocksList, FreeMemBlocksList & AllocMemBlocksList
 	if (LIST_SIZE(&(AvailableMemBlocksList)) != numOfBlocks || LIST_SIZE(&(FreeMemBlocksList)) != numOfFreeBlocks_FF || LIST_SIZE(&(AllocMemBlocksList)) != 0)
 		panic("find_block: AvailableMemBlocksList, FreeMemBlocksList & AllocMemBlocksList are affected and this shall not occurred.");
-
+	cprintf("\tpassed Scenario 1");
 	//====================================================================//
 	/*FF ALLOC Scenario 2: Try to allocate a block with a size equal to the size of the first existing free block*/
 	blockToAlloc = alloc_block_FF(9*kilo);
@@ -276,18 +276,16 @@ void test_alloc_block_FF()
 	int chk = check_list_data(&FreeMemBlocksList, BlocksSVAs, BlocksSizes, &size, actualSize);
 	if(chk != 1) panic("alloc_block_FF: WRONG FF ALLOC .. FreeMemBlocksList content is not correct.");
 	if(size != actualSize) panic("alloc_block_FF: WRONG FF ALLOC .. FreeMemBlocksList size is not correct.");
-
+	cprintf("**\npassed Scenario 2 with Available list size %d",AvailableMemBlocksList.size);
 	//====================================================================//
 	/*FF ALLOC Scenario 3: Try to allocate a block with a size smaller than the size of the first existing free block*/
 	blockToAlloc = alloc_block_FF(1*Mega);
-
 	//Check returned block content
 	if(blockToAlloc == NULL || blockToAlloc->size != 1*Mega || blockToAlloc->sva != 0x1A400)
 		panic("alloc_block_FF: WRONG FF ALLOC - alloc_block_FF find a wrong block.");
-
 	//Check size of AvailableMemBlocksList, FreeMemBlocksList & AllocMemBlocksList
 	if (LIST_SIZE(&(AvailableMemBlocksList)) != numOfBlocks-1 || LIST_SIZE(&(FreeMemBlocksList)) != numOfFreeBlocks_FF-1 || LIST_SIZE(&(AllocMemBlocksList)) != 0)
-		panic("alloc_block_FF: Wrong sizes for AvailableMemBlocksList, FreeMemBlocksList and AllocMemBlocksList.");
+	panic("alloc_block_FF: Wrong sizes for AvailableMemBlocksList, FreeMemBlocksList and AllocMemBlocksList.");
 
 	//Check FreeMemBlocksList content
 	size = 0;
