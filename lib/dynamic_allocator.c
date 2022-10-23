@@ -145,19 +145,19 @@ struct MemBlock *alloc_block_FF(uint32 size)
 				{
 					cprintf("\tin greater size case ");
 					 struct MemBlock *ptrToBeKept;
-					 uint32 sva=0;
-					 sva=ptrFreeLooper->sva;
+					 //init block to be returned
+					  ptrToBeKept = LIST_LAST(&AvailableMemBlocksList);
+					  ptrToBeKept->size=size;
+					  ptrToBeKept->sva=ptrFreeLooper->sva;
+					 //remove returned block from avai
+					  LIST_REMOVE(&AvailableMemBlocksList, ptrToBeKept);
 					 cprintf("\n block size before updating = %d",ptrFreeLooper->size);
-					 ptrToBeKept=ptrFreeLooper;
 					 //updating remaining free block size
 					ptrFreeLooper->size=ptrFreeLooper->size-size;
+
 					ptrFreeLooper->sva=ptrFreeLooper->sva+size;
 					cprintf("block size after update to remaining %d",ptrFreeLooper->size);
 					//update returned block size
-					ptrToBeKept->size=size;
-					ptrToBeKept->sva=sva;
-					AvailableMemBlocksList.size--;
-
 					return ptrToBeKept;
 				}
 		//case if size is equal to given size
@@ -280,16 +280,17 @@ void insert_sorted_with_merge_freeList(struct MemBlock *blockToInsert)
 					uint32 totalSize = firstBlockSize + blockToInsert->size + LIST_NEXT(freeBlock)->size;
 					freeBlock->size = totalSize;
 
+					struct MemBlock *prtToBeRemoved = freeBlock->prev_next_info.le_next;
 					// Zeroing
 					blockToInsert->size = 0;
 					blockToInsert->sva = 0;
-					freeBlock->prev_next_info.le_next->size = 0;
-					freeBlock->prev_next_info.le_next->sva = 0;
+					prtToBeRemoved->size = 0;
+					prtToBeRemoved->sva = 0;
 
 					// Remove the next to freeBlock
-					LIST_REMOVE(&FreeMemBlocksList, freeBlock->prev_next_info.le_next);
+					LIST_REMOVE(&FreeMemBlocksList, prtToBeRemoved);
 					//Insert Elements to AvailableMemBlockList
-					LIST_INSERT_HEAD(&AvailableMemBlocksList, LIST_NEXT(freeBlock));
+					LIST_INSERT_HEAD(&AvailableMemBlocksList, prtToBeRemoved);
 					LIST_INSERT_HEAD(&AvailableMemBlocksList, blockToInsert);
 
 
