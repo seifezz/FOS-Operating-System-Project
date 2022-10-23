@@ -106,12 +106,75 @@ void insert_sorted_allocList(struct MemBlock *blockToInsert)
 //=========================================
 // [4] ALLOCATE BLOCK BY FIRST FIT:
 //=========================================
+
 struct MemBlock *alloc_block_FF(uint32 size)
 {
-	//TODO: [PROJECT MS1] [DYNAMIC ALLOCATOR] alloc_block_FF
-	// Write your code here, remove the panic and write your code
-	panic("alloc_block_FF() is not implemented yet...!!");
+	cprintf("\n size sent to func. = %d  ",size,"\n");
+	struct MemBlock *ptrFreeLooper;
+	struct MemBlock *ptrFreeLooperz;
+		cprintf(" size of free list  = %d",FreeMemBlocksList.size);
+
+
+		int count=0;
+							LIST_FOREACH (ptrFreeLooperz,&FreeMemBlocksList)
+							{
+								cprintf(" \nto see sva %d",ptrFreeLooperz->sva);
+								cprintf(" \nto see size %d",ptrFreeLooperz->size);
+								count++;
+								cprintf("\n%d",count);
+							}
+	LIST_FOREACH (ptrFreeLooper,&FreeMemBlocksList)
+	{
+		cprintf(" size of list block = %d",ptrFreeLooper->size);
+		//case no free available
+		if(ptrFreeLooper->size<size)
+		{
+				cprintf("\t in size smaller \n");
+			if(ptrFreeLooper==FreeMemBlocksList.lh_last)
+			{
+				cprintf("\n no ava block size");
+				ptrFreeLooper= NULL;
+				break;
+			}
+			else{
+				continue;
+			}
+		}
+		//case grater size
+			 if (ptrFreeLooper->size>size)
+				{
+					cprintf("\tin greater size case ");
+					 struct MemBlock *ptrToBeKept;
+					 uint32 sva=0;
+					 sva=ptrFreeLooper->sva;
+					 cprintf("\n block size before updating = %d",ptrFreeLooper->size);
+					 ptrToBeKept=ptrFreeLooper;
+					 //updating remaining free block size
+					ptrFreeLooper->size=ptrFreeLooper->size-size;
+					ptrFreeLooper->sva=ptrFreeLooper->sva+size;
+					cprintf("block size after update to remaining %d",ptrFreeLooper->size);
+					//update returned block size
+					ptrToBeKept->size=size;
+					ptrToBeKept->sva=sva;
+					AvailableMemBlocksList.size--;
+
+					return ptrToBeKept;
+				}
+		//case if size is equal to given size
+			 if(ptrFreeLooper->size==size)
+					{
+						cprintf("\n in size equal \n");
+						LIST_REMOVE(&FreeMemBlocksList, ptrFreeLooper);
+						cprintf("\n size of Free list after removal=%d",LIST_SIZE(&FreeMemBlocksList),"\n");
+						cprintf("\n size of All list after insertion=%d",LIST_SIZE(&AllocMemBlocksList),"\n");
+						break;
+					}
+
+	}
+	return ptrFreeLooper;
 }
+
+
 
 //=========================================
 // [5] ALLOCATE BLOCK BY BEST FIT:
