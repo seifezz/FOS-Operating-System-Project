@@ -846,7 +846,7 @@ void test_insert_sorted_with_merge_freeList()
 	blockToInsert9.size = blocksToInsertSizes[idx_blocksToInsert];
 
 	//printf("===>BEFORE\n");
-	show_list_content(&FreeMemBlocksList);
+	//show_list_content(&FreeMemBlocksList);
 
 	insert_sorted_with_merge_freeList(&blockToInsert9);
 	//show_list_content(&FreeMemBlocksList);
@@ -865,7 +865,7 @@ void test_insert_sorted_with_merge_freeList()
 	blocksToInsertSVAs[idx_blocksToInsert+1] = 0x0;
 	blocksToInsertSizes[idx_blocksToInsert+1] = 0;
 	chk = check_list_data(&FreeMemBlocksList, blocksToInsertSVAs, blocksToInsertSizes, &size, actualSize);
-	show_list_content(&FreeMemBlocksList);
+	//show_list_content(&FreeMemBlocksList);
 	if(chk != 1) panic("insert_sorted_with_merge: WRONG INSERT .. FreeMemBlocksList content is not correct.");
 	cprintf("%x %d \n", size, actualSize);
 	if(size != actualSize) panic("insert_sorted_with_merge: WRONG INSERT .. FreeMemBlocksList size is not correct.");
@@ -894,14 +894,14 @@ int check_list_data(struct MemBlock_List* list, uint32* blocksSVAs, uint32* bloc
 		while(blocksSizes[i] == 0) //Empty entry in the given ground truth array .. skip it
 			i++;
 
-		cprintf("i = %d .. \n", i);
-		cprintf("Node data: sva = %x, size = %d\n", node->sva, node->size);
-		cprintf("blocks[i] data: sva = %x, size = %d\n", blocksSVAs[(i)], blocksSizes[i]);
+		//cprintf("i = %d .. \n", i);
+		//cprintf("Node data: sva = %x, size = %d\n", node->sva, node->size);
+		//cprintf("blocks[i] data: sva = %x, size = %d\n", blocksSVAs[(i)], blocksSizes[i]);
 		if(node->sva != blocksSVAs[(i)] || node->size != blocksSizes[i])
 		{
-//			cprintf("i = %d .. \n", i);
-//			cprintf("Node data: sva = %x, size = %d\n", node->sva, node->size);
-//			cprintf("blocks[i] data: sva = %x, size = %d\n", blocksSVAs[(i)], blocksSizes[i]);
+			cprintf("i = %d .. \n", i);
+			cprintf("Node data: sva = %x, size = %d\n", node->sva, node->size);
+			cprintf("blocks[i] data: sva = %x, size = %d\n", blocksSVAs[(i)], blocksSizes[i]);
 			return 0;
 		}
 		(*size)++;

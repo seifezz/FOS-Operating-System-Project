@@ -151,6 +151,51 @@ void insert_sorted_with_merge_freeList(struct MemBlock *blockToInsert)
 //	LIST_REMOVE(&FreeMemBlocksList, LIST_LAST(&AvailableMemBlocksList));
 //	LIST_INSERT_TAIL(&FreeMemBlocksList, LIST_LAST(&AvailableMemBlocksList));
 //	LIST_REMOVE(&FreeMemBlocksList, LIST_LAST(&AvailableMemBlocksList));
+
+
+
+	// Merge Both Comments Draft
+
+	//					struct MemBlock *tmp;
+	//					cprintf("================================\n");
+	//					LIST_FOREACH(tmp, &FreeMemBlocksList) {
+	//						cprintf("%d \n", tmp->sva);
+	//					}
+	//					cprintf("================================\n");
+
+						//cprintf("%d %x\t \n", blockToInsert->size, LIST_NEXT(freeBlock)->size);
+
+
+						// Pointer to the fourth
+	//cprintf("freeSize: %d \n", firstBlockSize);
+	//cprintf("totalSize: %d \n", totalSize);
+	//cprintf("freeBlock: %d \n", freeBlock->size);
+
+	//cprintf("%x \t %d \n", freeBlock->sva, freeBlock->size);
+//					cprintf("%d -> %d -> %d \n", freeBlock->sva,
+//					freeBlock->prev_next_info.le_next->sva,
+//					freeBlock->prev_next_info.le_next->prev_next_info.le_next->sva,
+//					freeBlock->prev_next_info.le_next->prev_next_info.le_next->prev_next_info.le_next->sva
+//					);
+
+	//					cprintf("%d -> %d -> %d \n", freeBlock->sva,
+	//					freeBlock->prev_next_info.le_next->sva
+	//					);
+						// Zeroing
+	//					blockToInsert->size = 0;
+	//					blockToInsert->sva = 0;
+	//					freeBlock->prev_next_info.le_next->size = 0;
+	//					freeBlock->prev_next_info.le_next->sva = 0;
+
+	//					cprintf("================================\n");
+	//					struct MemBlock *tmpp;
+	//					LIST_FOREACH(tmpp, &FreeMemBlocksList) {
+	//						cprintf("%d \n", tmpp->sva);
+	//					}
+	//
+	//					cprintf("================================\n");
+
+
 	int freeListSize = LIST_SIZE(&FreeMemBlocksList);
 	cprintf("START PROCESS %d\n", freeListSize);
 	if(freeListSize == 0){
@@ -167,57 +212,23 @@ void insert_sorted_with_merge_freeList(struct MemBlock *blockToInsert)
 						freeBlock->sva + freeBlock->size == blockToInsert->sva &&
 						blockToInsert->sva + blockToInsert->size == freeBlock->prev_next_info.le_next->sva
 				) {
-
-//					struct MemBlock *tmp;
-//					cprintf("================================\n");
-//					LIST_FOREACH(tmp, &FreeMemBlocksList) {
-//						cprintf("%d \n", tmp->sva);
-//					}
-//					cprintf("================================\n");
-
-					//cprintf("%d %x\t \n", blockToInsert->size, LIST_NEXT(freeBlock)->size);
-
-
-					// Pointer to the fourth
-					struct MemBlock *nextOfNext;
-					nextOfNext = LIST_NEXT(freeBlock);
-					cprintf("NextOfNext: %d \n", nextOfNext->sva);
-
+					// Adding Sizes
 					uint32 firstBlockSize = freeBlock->size;
-					//cprintf("freeSize: %d \n", firstBlockSize);
 					uint32 totalSize = firstBlockSize + blockToInsert->size + LIST_NEXT(freeBlock)->size;
-					//cprintf("totalSize: %d \n", totalSize);
 					freeBlock->size = totalSize;
-					//cprintf("freeBlock: %d \n", freeBlock->size);
 
-					//cprintf("%x \t %d \n", freeBlock->sva, freeBlock->size);
-//					cprintf("%d -> %d -> %d \n", freeBlock->sva,
-//					freeBlock->prev_next_info.le_next->sva,
-//					freeBlock->prev_next_info.le_next->prev_next_info.le_next->sva,
-//					freeBlock->prev_next_info.le_next->prev_next_info.le_next->prev_next_info.le_next->sva
-//					);
-					LIST_REMOVE(&FreeMemBlocksList, freeBlock->prev_next_info.le_next);
-
-//					cprintf("%d -> %d -> %d \n", freeBlock->sva,
-//					freeBlock->prev_next_info.le_next->sva
-//					);
 					// Zeroing
-//					blockToInsert->size = 0;
-//					blockToInsert->sva = 0;
-//					freeBlock->prev_next_info.le_next->size = 0;
-//					freeBlock->prev_next_info.le_next->sva = 0;
+					blockToInsert->size = 0;
+					blockToInsert->sva = 0;
+					freeBlock->prev_next_info.le_next->size = 0;
+					freeBlock->prev_next_info.le_next->sva = 0;
 
-					LIST_NEXT(freeBlock)->prev_next_info.le_next->prev_next_info.le_next = nextOfNext;
+					// Remove the next to freeBlock
+					LIST_REMOVE(&FreeMemBlocksList, freeBlock->prev_next_info.le_next);
+					//Insert Elements to AvailableMemBlockList
 					LIST_INSERT_HEAD(&AvailableMemBlocksList, LIST_NEXT(freeBlock));
 					LIST_INSERT_HEAD(&AvailableMemBlocksList, blockToInsert);
 
-//					cprintf("================================\n");
-//					struct MemBlock *tmpp;
-//					LIST_FOREACH(tmpp, &FreeMemBlocksList) {
-//						cprintf("%d \n", tmpp->sva);
-//					}
-//
-//					cprintf("================================\n");
 
 					break;
 				}
