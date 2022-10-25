@@ -106,6 +106,8 @@ void test_insert_sorted_allocList()
 
 	//Check 1: Check size of the AllocMemBlocksList
 	actualSize = 2;
+	cprintf("actual size %d \n",actualSize);
+	cprintf("list size %d \n" ,LIST_SIZE(&AllocMemBlocksList));
 	if (LIST_SIZE(&(AllocMemBlocksList)) != actualSize) panic("insert_sorted: WRONG ALLOCATION - wrong size for the AllocMemBlocksList.");
 
 	//Check 2: Check size of the AvailableMemBlocksList

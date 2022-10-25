@@ -100,7 +100,59 @@ void insert_sorted_allocList(struct MemBlock *blockToInsert)
 {
 	//TODO: [PROJECT MS1] [DYNAMIC ALLOCATOR] insert_sorted_allocList
 	// Write your code here, remove the panic and write your code
-	panic("insert_sorted_allocList() is not implemented yet...!!");
+	//panic("insert_sorted_allocList() is not implemented yet...!!");
+
+	int AllocListSize = LIST_SIZE(&AllocMemBlocksList);
+
+
+	if (AllocListSize==0){
+		cprintf("allocated list is empty \n");
+		LIST_INSERT_HEAD(&AllocMemBlocksList,blockToInsert);
+		cprintf("111111111111 \n");
+	}
+
+	else {
+
+		struct MemBlock *LocatedElm;
+
+		LIST_FOREACH(LocatedElm ,&AllocMemBlocksList){
+
+			if (   LocatedElm->prev_next_info.le_next!=NULL&&
+					LocatedElm->prev_next_info.le_prev!=NULL&&
+					(LIST_PREV(LocatedElm)->sva + LIST_PREV(LocatedElm)->size) < blockToInsert->sva &&
+					LIST_NEXT(LocatedElm)->sva > (blockToInsert->sva +blockToInsert->size)
+					//(LocatedElm->prev_next_info.le_prev->sva+LocatedElm->prev_next_info.le_prev->size)
+					//< blockToInsert->sva &&
+				//LocatedElm->prev_next_info.le_next->sva > blockToInsert->sva
+					)
+					{
+				cprintf("2222222222222222 \n");
+				LIST_INSERT_AFTER(&AllocMemBlocksList ,LIST_PREV(LocatedElm) ,blockToInsert);
+				break;
+
+			}
+			else if (LocatedElm->prev_next_info.le_next==NULL &&
+						LocatedElm->prev_next_info.le_prev!=NULL &&
+						(LocatedElm->sva+LocatedElm->size) < blockToInsert->sva
+
+					  ){
+				cprintf("3333333333333333 \n");
+				LIST_INSERT_TAIL(&AllocMemBlocksList , blockToInsert);
+				break ;
+
+			}
+			else if (LocatedElm->prev_next_info.le_prev==NULL &&
+					LocatedElm->prev_next_info.le_next!=NULL &&
+					LocatedElm->sva > (blockToInsert->sva + blockToInsert->size)){
+				cprintf("4444444444444444 \n");
+				LIST_INSERT_HEAD(&AllocMemBlocksList,blockToInsert);
+				break ;
+			}
+		}
+
+     }
+
+
 }
 
 //=========================================
